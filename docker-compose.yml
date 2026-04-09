@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: taskflow-db
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow123
+      POSTGRES_DB: taskflow_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - taskflow-network
+
+  backend:
+    image: pakarmy786/taskflow-backend:latest
+    container_name: taskflow-backend
+    environment:
+      DATABASE_URL: postgresql://taskflow:taskflow123@db:5432/taskflow_db
+      JWT_SECRET_KEY: 8f4e2b1c9d6a5e3f7b8c2d4e1a9f6b3c5d7e8a2b4c6d8e1f3a5b7c9d2e4f6a8b
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - taskflow-network
+
+  frontend:
+    image: pakarmy786/taskflow-frontend:latest
+    container_name: taskflow-frontend
+    environment:
+      VITE_API_URL: http://15.223.243.107:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - taskflow-network
+
+volumes:
+  postgres_data:
+
+networks:
+  taskflow-network:
+    driver: bridge
