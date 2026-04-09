@@ -9,24 +9,17 @@ pipeline {
         stage('Checkout') {
             steps {
                 cleanWs()
-                checkout scm
-                echo 'Code checked out'
-            }
-        }
-        
-        stage('Build Images') {
-            steps {
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} build --no-cache'
-                echo 'Images built'
+                checkout scm  # Fetches code from GitHub
+                echo 'Code checked out from GitHub'
             }
         }
         
         stage('Deploy') {
             steps {
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} down || true'
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'
+                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'  # Uses images + volumes for code
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} ps'
-                echo 'Deployed'
+                echo 'Deployed with code volumes'
             }
         }
         
@@ -40,7 +33,7 @@ pipeline {
     
     post {
         success {
-            echo 'Pipeline success! App running on ports 8001 and 8081'
+            echo 'Pipeline success! App running on ports 8001 and 8081 with volume-mounted code'
         }
         failure {
             echo 'Pipeline failed'
