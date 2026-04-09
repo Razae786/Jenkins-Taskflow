@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 cleanWs()
-                checkout scm  # Fetches code from GitHub
+                checkout scm
                 echo 'Code checked out from GitHub'
             }
         }
@@ -17,7 +17,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} down || true'
-                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'  # Uses images + volumes for code
+                sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} ps'
                 echo 'Deployed with code volumes'
             }
