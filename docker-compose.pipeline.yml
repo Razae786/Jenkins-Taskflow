@@ -15,7 +15,7 @@ services:
       - taskflow-pipeline-network
 
   backend-pipeline:
-    image: pakarmy786/taskflow-backend:latest
+    image: pakarmy786/taskflow-backend:latest  # ✅ Pre-built image
     container_name: taskflow-backend-pipeline
     environment:
       DATABASE_URL: postgresql://taskflow:taskflow123@db-pipeline:5432/taskflow_db
@@ -23,7 +23,7 @@ services:
     ports:
       - "8081:8000"
     volumes:
-      - ./backend:/app
+      - ./backend:/app  # ✅ Volume for code
       - /app/__pycache__
     depends_on:
       - db-pipeline
@@ -31,12 +31,15 @@ services:
       - taskflow-pipeline-network
 
   frontend-pipeline:
-    build: ./frontend  # Use Dockerfile to build, not pre-built image
+    image: pakarmy786/taskflow-frontend:latest  # ✅ Pre-built image (NOT build)
     container_name: taskflow-frontend-pipeline
     environment:
       VITE_API_URL: http://15.223.243.107:8081
     ports:
       - "8082:3000"
+    volumes:
+      - ./frontend:/app  # ✅ Volume for code
+      - /app/node_modules
     depends_on:
       - backend-pipeline
     networks:
