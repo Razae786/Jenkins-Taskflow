@@ -16,6 +16,7 @@ pipeline {
         
         stage('Deploy') {
             steps {
+                sh 'docker rm -f taskflow-frontend-pipeline taskflow-backend-pipeline taskflow-db-pipeline 2>/dev/null || true'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} down || true'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} ps'
@@ -26,7 +27,7 @@ pipeline {
         stage('Health Check') {
             steps {
                 sh 'sleep 10'
-                sh 'curl -f http://localhost:8081/'  // Fixed port
+                sh 'curl -f http://localhost:8081/'
             }
         }
     }
