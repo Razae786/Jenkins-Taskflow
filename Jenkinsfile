@@ -26,14 +26,14 @@ pipeline {
         stage('Health Check') {
             steps {
                 sh 'sleep 10'
-                sh 'curl -f http://localhost:8001/ || echo "Backend not ready"'
+                sh 'curl -f http://localhost:8081/'  // Fixed port
             }
         }
     }
     
     post {
         success {
-            echo 'Pipeline success! App running on ports 8001 and 8081 with volume-mounted code'
+            echo 'Pipeline success! App running on ports 8081 and 8082'
         }
         failure {
             echo 'Pipeline failed'
