@@ -21,7 +21,7 @@ services:
       DATABASE_URL: postgresql://taskflow:taskflow123@db-pipeline:5432/taskflow_db
       JWT_SECRET_KEY: 8f4e2b1c9d6a5e3f7b8c2d4e1a9f6b3c5d7e8a2b4c6d8e1f3a5b7c9d2e4f6a8b
     ports:
-      - "8081:8000"  # Using 8081 which is OPEN in your SG
+      - "8081:8000"
     volumes:
       - ./backend:/app
       - /app/__pycache__
@@ -31,15 +31,12 @@ services:
       - taskflow-pipeline-network
 
   frontend-pipeline:
-    image: pakarmy786/taskflow-frontend:latest
+    build: ./frontend  # Use Dockerfile to build, not pre-built image
     container_name: taskflow-frontend-pipeline
     environment:
-      VITE_API_URL: http://15.223.243.107:8081  # Match backend port
+      VITE_API_URL: http://15.223.243.107:8081
     ports:
-      - "8082:3000"  # Frontend on 8082
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "8082:3000"
     depends_on:
       - backend-pipeline
     networks:
