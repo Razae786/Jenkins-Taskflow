@@ -15,15 +15,15 @@ services:
       - taskflow-pipeline-network
 
   backend-pipeline:
-    image: pakarmy786/taskflow-backend:latest  # Use pre-built image from Docker Hub
+    image: pakarmy786/taskflow-backend:latest
     container_name: taskflow-backend-pipeline
     environment:
       DATABASE_URL: postgresql://taskflow:taskflow123@db-pipeline:5432/taskflow_db
       JWT_SECRET_KEY: 8f4e2b1c9d6a5e3f7b8c2d4e1a9f6b3c5d7e8a2b4c6d8e1f3a5b7c9d2e4f6a8b
     ports:
-      - "8001:8000"
+      - "8081:8000"  # Using 8081 which is OPEN in your SG
     volumes:
-      - ./backend:/app  # Volume for code (instead of Dockerfile/build)
+      - ./backend:/app
       - /app/__pycache__
     depends_on:
       - db-pipeline
@@ -31,14 +31,14 @@ services:
       - taskflow-pipeline-network
 
   frontend-pipeline:
-    image: pakarmy786/taskflow-frontend:latest  # Use pre-built image from Docker Hub
+    image: pakarmy786/taskflow-frontend:latest
     container_name: taskflow-frontend-pipeline
     environment:
-      VITE_API_URL: http://15.223.243.107:8001
+      VITE_API_URL: http://15.223.243.107:8081  # Match backend port
     ports:
-      - "8081:3000"
+      - "8082:3000"  # Frontend on 8082
     volumes:
-      - ./frontend:/app  # Volume for code (instead of Dockerfile/build)
+      - ./frontend:/app
       - /app/node_modules
     depends_on:
       - backend-pipeline
