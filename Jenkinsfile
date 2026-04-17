@@ -14,13 +14,19 @@ pipeline {
             }
         }
         
+        stage('Build Frontend') {
+            steps {
+                sh 'cd frontend && npm install && npm run build'
+                echo 'Frontend built'
+            }
+        }
+        
         stage('Deploy') {
             steps {
-                sh 'docker rm -f taskflow-frontend-pipeline taskflow-backend-pipeline taskflow-db-pipeline 2>/dev/null || true'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} down || true'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} up -d'
                 sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} ps'
-                echo 'Deployed with code volumes'
+                echo 'Deployed'
             }
         }
         
@@ -34,7 +40,7 @@ pipeline {
     
     post {
         success {
-            echo 'Pipeline success! App running on ports 8081 and 8082'
+            echo 'Pipeline success!'
         }
         failure {
             echo 'Pipeline failed'
